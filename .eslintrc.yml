@@ -2,6 +2,7 @@ parser: babel-eslint
 
 plugins:
   - babel
+  - react
 
 env:
   es6: true
@@ -9,7 +10,7 @@ env:
   commonjs: true
   node: true
 
-extends: 'eslint:recommended'
+extends: ['eslint:recommended', 'plugin:react/recommended']
 
 
 
