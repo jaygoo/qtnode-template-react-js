@@ -1,0 +1,17 @@
+init:
+  - pkg: console
+
+dev:
+  - pkg: console
+  - middleware: devserver
+
+build:
+  - middleware: eslint
+  - middleware: mocha
+  - middleware: webpack
+
+test:
+  - middleware: eslint
+  - middleware: mocha
+
+publish:
