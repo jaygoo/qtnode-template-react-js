@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 function resolve (dir) {
@@ -12,8 +11,8 @@ module.exports = {
     devtool: 'inline-source-map',
     target: 'web',
     entry: {
-        app: ['webpack-hot-middleware/client?noInfo=true&reload=true', resolve('./src/index.js')],
-        index: ['webpack-hot-middleware/client?noInfo=true&reload=true', resolve('./src/page/index/index.js')]
+        app: resolve('./src/index.js'),
+        index: resolve('./src/page/index/index.js')
 
     },
     output: {
@@ -36,7 +35,11 @@ module.exports = {
                 ]
             },
             {
-                test: /\.(png|svg|jpg|gif)$/,
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader']
+            },
+            {
+                test: /\.(png|svg|jpg|gif|jpeg)$/,
                 use: [
                     'file-loader'
                 ]
@@ -62,8 +65,6 @@ module.exports = {
         ]
     },
     plugins: [
-        // new CleanWebpackPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             filename: 'app.html',
             // trunk: ['app'],
