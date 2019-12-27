@@ -1,5 +1,8 @@
 const path = require('path');
+// const webpack = require('webpack');
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 function resolve (dir) {
     let p = path.resolve(__dirname, '..', dir);
@@ -8,7 +11,7 @@ function resolve (dir) {
 
 module.exports = {
     mode: 'production',
-    devtool: 'inline-source-map',
+    devtool: 'cheap-module-source-map',
     target: 'web',
     entry: {
         app: resolve('./src/index.js'),
@@ -53,6 +56,10 @@ module.exports = {
                 ]
             },
             {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader']
+            },
+            {
                 test: /\.xml$/,
                 use: [
                     'xml-loader'
@@ -60,7 +67,40 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            minSize: 2000,
+            automaticNameDelimiter: '~',
+            name: true,
+            minChunks: 2,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        },
+        runtimeChunk: {
+            name: 'runtime'
+        }
+    },
     plugins: [
+
+        new ExtractTextPlugin({
+            filename:  (getPath) => {
+                return getPath('css/[name].css').replace('css/js', 'css');
+            },
+            allChunks: true
+        }),
+
         new HtmlWebpackPlugin({
             filename: 'app.html',
             // trunk: ['app'],
