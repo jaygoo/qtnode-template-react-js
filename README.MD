@@ -1,5 +1,5 @@
-# qtnod-templete-npm-js
+# qtnod-templete-react-js
 
 ```
-    基于es6的npm包模板
+    基于es6的react包模板
 ```
