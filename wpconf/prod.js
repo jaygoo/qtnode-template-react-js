@@ -1,5 +1,5 @@
 const path = require('path');
-// const webpack = require('webpack');
+const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -20,7 +20,8 @@ module.exports = {
     },
     output: {
         path:  resolve( './dist'),
-        filename: '[name].js',
+        filename: '[name].[contenthash].bundle.js',
+        chunkFilename: '[name].[contenthash].bundle.js',
         publicPath: resolve('/')
     },
     module: {
@@ -93,7 +94,8 @@ module.exports = {
         }
     },
     plugins: [
-
+        new webpack.HashedModuleIdsPlugin(),
+        
         new ExtractTextPlugin({
             filename:  (getPath) => {
                 return getPath('css/[name].css').replace('css/js', 'css');
