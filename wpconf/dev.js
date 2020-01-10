@@ -1,14 +1,16 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 function resolve (dir) {
     let p = path.resolve(__dirname, '..', dir);
     return p;
 }
 
 module.exports = {
-    mode: 'development',
-    devtool: 'inline-source-map',
+    mode: 'production',
+    devtool: 'cheap-module-source-map',
     target: 'web',
     entry: {
         app: resolve('./src/index.js'),
@@ -17,8 +19,9 @@ module.exports = {
     },
     output: {
         path:  resolve( './dist'),
-        filename: '[name].js',
-        publicPath: resolve('/')
+        filename: '[name].[contenthash].js',
+        chunkFilename: '[name].[contenthash].chunk.js',
+        publicPath: './'
     },
     module: {
         rules: [
@@ -33,10 +36,6 @@ module.exports = {
                     'style-loader',
                     'css-loader'
                 ]
-            },
-            {
-                test: /\.less$/,
-                use: ['style-loader', 'css-loader', 'less-loader']
             },
             {
                 test: /\.(png|svg|jpg|gif|jpeg)$/,
@@ -57,6 +56,10 @@ module.exports = {
                 ]
             },
             {
+                test: /\.less$/,
+                use: ['style-loader', 'css-loader', 'less-loader']
+            },
+            {
                 test: /\.xml$/,
                 use: [
                     'xml-loader'
@@ -64,18 +67,52 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'all',
+            minSize: 2000,
+            automaticNameDelimiter: '.',
+            name: true,
+            minChunks: 2,
+            maxAsyncRequests: 5,
+            maxInitialRequests: 3,
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10,
+                    name: 'vendors'
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    name: 'default',
+                    reuseExistingChunk: true
+
+                }
+            }
+        },
+        runtimeChunk: {
+            name: 'runtime'
+        }
+    },
     plugins: [
+        new webpack.HashedModuleIdsPlugin(),
+        new ExtractTextPlugin({
+            filename:  (getPath) => {
+                return getPath('css/[name].css').replace('css/js', 'css');
+            },
+            allChunks: true
+        }),
+
         new HtmlWebpackPlugin({
             filename: 'app.html',
-            // trunk: ['app'],
-            excludeChunks: ['index'],
-            title: 'react标准模板aaa',
+            chunks: ['app', 'runtime', 'default','vendors'],
+            title: 'app',
             template: './src/static/index.html'
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            // trunk: ['index'],
-            excludeChunks: ['app'],
+            chunks: ['index', 'runtime', 'default','vendors'],
             title: 'react标准模板',
             template: './src/static/index.html'
         })

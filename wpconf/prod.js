@@ -3,7 +3,7 @@ const webpack = require('webpack');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
+const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
 function resolve (dir) {
     let p = path.resolve(__dirname, '..', dir);
     return p;
@@ -20,9 +20,9 @@ module.exports = {
     },
     output: {
         path:  resolve( './dist'),
-        filename: '[name].[contenthash].bundle.js',
-        chunkFilename: '[name].[contenthash].bundle.js',
-        publicPath: resolve('/')
+        filename: '[name].[contenthash].js',
+        chunkFilename: '[name].[contenthash].chunk.js',
+        publicPath: './'
     },
     module: {
         rules: [
@@ -72,7 +72,7 @@ module.exports = {
         splitChunks: {
             chunks: 'all',
             minSize: 2000,
-            automaticNameDelimiter: '~',
+            automaticNameDelimiter: '.',
             name: true,
             minChunks: 2,
             maxAsyncRequests: 5,
@@ -80,12 +80,15 @@ module.exports = {
             cacheGroups: {
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
-                    priority: -10
+                    priority: -10,
+                    name: 'vendors'
                 },
                 default: {
                     minChunks: 2,
                     priority: -20,
+                    name: 'default',
                     reuseExistingChunk: true
+
                 }
             }
         },
@@ -95,7 +98,7 @@ module.exports = {
     },
     plugins: [
         new webpack.HashedModuleIdsPlugin(),
-        
+        new CleanWebpackPlugin(),
         new ExtractTextPlugin({
             filename:  (getPath) => {
                 return getPath('css/[name].css').replace('css/js', 'css');
@@ -105,15 +108,13 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             filename: 'app.html',
-            // trunk: ['app'],
-            excludeChunks: ['index'],
-            title: 'react标准模板aaa',
+            chunks: ['app', 'runtime', 'default','vendors'],
+            title: 'app',
             template: './src/static/index.html'
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            // trunk: ['index'],
-            excludeChunks: ['app'],
+            chunks: ['index', 'runtime', 'default','vendors'],
             title: 'react标准模板',
             template: './src/static/index.html'
         })

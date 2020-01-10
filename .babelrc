@@ -1,28 +1,15 @@
 {
   "presets": [
     "react",
-    "env"
+    ["env", {"targets": {  "browsers": "> 5%"}}]
   ],
+  "plugins": ["syntax-dynamic-import"],
   "env": {
     "development": {
-      "plugins": [
-        [
-          "react-transform",
-          {
-            "transforms": [
-              {
-                "transform": "react-transform-hmr",
-                "imports": [
-                  "react"
-                ],
-                "locals": [
-                  "module"
-                ]
-              }
-            ]
-          }
-        ]
-      ]
+
+    },
+    "production": {
+
     }
   }
 }
