@@ -2,6 +2,41 @@ import React from 'react';
 import '../static/style/app.less';
 import bg from '../static/img/bg.jpeg';
 class Component extends React.Component {
+    constructor(props) {
+        super(props);
+
+    }
+
+    UNSAFE_componentWillMount(){
+    }
+
+    componentDidMount() {
+    }
+
+    componentWillUnmount () {
+    }
+
+    UNSAFE_componentWillReceiveProps (nextProps) {
+    }
+
+    shouldComponentUpdate(nextProps,nextState) {
+        return true;
+    }
+
+    UNSAFE_componentWillUpdate (nextProps,nextState) {
+    }
+
+    componentDidUpdate(prevProps,prevState) {
+    }
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        return null;
+    }
+
+    static getSnapshotBeforeUpdate(prevProps, prevState) {
+        return null;
+    }
+
     render() {
         return (
             <div className={'content'}>
